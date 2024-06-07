@@ -9,6 +9,15 @@ export class GameState {
     mainLayer: SVGSVGElement
     animationLayer: SVGSVGElement
 
+    get isValid() {
+        return !!(this.mainLayer)
+    }
+
+    get fieldSizes() {
+        if (!this.isValid) return undefined
+        return this.mainLayer.getBoundingClientRect()
+    }
+
     constructor() {
         this.init()
     }

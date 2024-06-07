@@ -17,9 +17,15 @@ export class GameController {
     }
 
     onDblClick = (event: MouseEvent) => {
-        this.rects.push(
-            new Rect(this, [event.offsetX, event.offsetY])
-        )
+        if (!this.state.isValid) return
+        if (event.currentTarget !== this.state.mainLayer) return
+
+        const sizes = this.state.fieldSizes!
+
+        this.rects.push(new Rect(this, [
+            Math.min(sizes.width - this.state.defaultWidth / 2, event.offsetX),
+            Math.min(sizes.height - this.state.defaultHeight / 2, event.offsetY)
+        ]))
     }
 
     dispose = () => {
