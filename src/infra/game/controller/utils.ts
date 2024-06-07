@@ -1,4 +1,4 @@
-import {IMatrix} from "@/controller/game/contracts";
+import {IMatrix} from "@/infra/game/controller/contracts";
 
 export class Matrix {
 

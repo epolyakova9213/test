@@ -1,6 +1,6 @@
 import React from "react";
 import styles from './header.module.css'
-import {Navigation} from "@/view/navigation/navigation";
+import {Navigation} from "@/infra/navigation/navigation";
 import bg from '../../../public/next.svg'
 
 export const Header: React.FC = () => {

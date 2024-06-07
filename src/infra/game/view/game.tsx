@@ -2,7 +2,7 @@
 
 import styles from './game.module.scss'
 import React, {useEffect, useRef, useState} from "react";
-import {GameController} from "@/controller/game/game.controller";
+import {GameController} from "@/infra/game/controller/game.controller";
 
 export const Game: React.FC = () => {
 

@@ -1,4 +1,4 @@
-import {Game} from "@/view/game/game";
+import {Game} from "@/infra/game/view/game";
 import './game.css'
 
 export const metadata = {
