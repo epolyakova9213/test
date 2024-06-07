@@ -1,0 +1,30 @@
+.navigation {
+  width: 100%;
+  margin: 5px;
+
+  ul {
+    display: flex;
+    flex-wrap: nowrap;
+    column-gap: 5px;
+    list-style-type: none;
+    justify-content: space-evenly;
+
+    li {
+      a {
+        color: white;
+        font: 25px bold monospace;
+        text-decoration: none;
+        text-transform: uppercase;
+
+        :hover {
+          cursor: pointer;
+        }
+
+      }
+      a.activeLink {
+        color: #fffb21;
+        text-shadow: #ffdb4d 1px 0 10px;;
+      }
+    }
+  }
+}

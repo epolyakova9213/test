@@ -1,3 +1,15 @@
 .header {
   background: black;
+  display: flex;
+  align-items: flex-end;
+  position: relative;
+}
+
+.bg {
+  position: absolute;
+  inset: 0px;
+  filter: blur(20px) invert(1);
+  background-repeat: no-repeat;
+  background-position: center;
+  pointer-events: none;
 }
