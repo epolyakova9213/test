@@ -31,6 +31,11 @@ export class Rect {
         this.spawn()
     }
 
+    goto = (newCenter: IPoint) => {
+        if (newCenter[0] === this.center[0] && newCenter[1] === this.center[1]) return
+        this.center = newCenter
+    }
+
     getDBySides(width: number, height: number) {
         return `M0,0m${-width / 2},${-height / 2}h${width}v${height}h${-width}v${-height}`
     }
