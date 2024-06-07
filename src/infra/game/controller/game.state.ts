@@ -6,6 +6,8 @@ export class GameState {
 
     animationQueue: AnimationQueue
 
+    isFieldResizing = true
+
     mainLayer: SVGSVGElement
     animationLayer: SVGSVGElement
 

@@ -9,8 +9,9 @@ export class Rect {
     path: SVGPathElement
     isSpawning = true
     state: GameState
+    center: IPoint = [0, 0]
 
-    constructor(public gameController: GameController, public center: IPoint) {
+    constructor(public gameController: GameController, public spawnCenter: IPoint) {
         this.state = this.gameController.state
         this.state.animationQueue.push(this.init)
     }
@@ -31,9 +32,10 @@ export class Rect {
         this.spawn()
     }
 
-    goto = (newCenter: IPoint) => {
-        if (newCenter[0] === this.center[0] && newCenter[1] === this.center[1]) return
+    goto = (newCenter: IPoint = this.center) => {
         this.center = newCenter
+        this.g.setAttribute('transform', Matrix.toStyle(Matrix.translateIdentity(...newCenter)))
+
     }
 
     getDBySides(width: number, height: number) {
@@ -41,26 +43,30 @@ export class Rect {
     }
 
     spawn = () => {
-        this.g.setAttribute('transform', Matrix.toStyle(identityMatrix))
+        this.goto()
 
-        let position: IPoint = [0, 0]
-        let cycles = 60 // 60 frames
-        let deltaX = this.center[0] / cycles
-        let deltaY = this.center[1] / cycles
+        let cycles = 300 // 60 frames
+        let deltaX = this.spawnCenter[0] / cycles
+        let deltaY = this.spawnCenter[1] / cycles
 
-        const go = () => {
-            position[0] = Math.min(position[0] + deltaX, this.center[0])
-            position[1] = Math.min(position[1] + deltaY, this.center[1])
-            this.g.setAttribute('transform', Matrix.toStyle(Matrix.translateIdentity(...position)))
+        const nextStep = () => {
+            this.goto([
+                Math.min(this.center[0] + deltaX, this.spawnCenter[0]),
+                Math.min(this.center[1] + deltaY, this.spawnCenter[1])
+            ])
 
-            if (position[0] !== this.center[0] || position[1] !== this.center[1]) {
-                this.state.animationQueue.push(go)
+            if (this.center[0] !== this.spawnCenter[0] || this.center[1] !== this.spawnCenter[1]) {
+                this.state.animationQueue.push(nextStep)
             } else {
                 this.isSpawning = false
             }
         }
 
-        this.state.animationQueue.push(go)
+        this.state.animationQueue.push(nextStep)
+    }
+
+    stopSpawn() {
+
     }
 
     dispose() {

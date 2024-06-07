@@ -1,5 +1,6 @@
 import {Rect} from "@/infra/game/controller/rect/rect";
 import {GameState} from "@/infra/game/controller/game.state";
+import {debounce} from "@/infra/game/controller/utils";
 
 export class GameController {
     state: GameState
@@ -14,11 +15,13 @@ export class GameController {
         this.state.mainLayer = svg
 
         this.state.mainLayer.addEventListener('dblclick', this.onDblClick)
+        this.observer = new ResizeObserver(this.onResize)
+        this.observer.observe(this.state.mainLayer)
     }
 
     onDblClick = (event: MouseEvent) => {
         if (!this.state.isValid) return
-        if (event.currentTarget !== this.state.mainLayer) return
+        if (event.target !== this.state.mainLayer) return
 
         const sizes = this.state.fieldSizes!
 
@@ -28,11 +31,13 @@ export class GameController {
         ]))
     }
 
-    onResize() {
+    onResize = () => {
+        this.state.isFieldResizing = true
         this.state.animationQueue.push(stub, true)
         const fieldSizes = this.state.fieldSizes!
         const leftEdge = fieldSizes.width - this.state.defaultWidth / 2
         const bottomEdge = fieldSizes.height - this.state.defaultHeight / 2
+
         for (let rect of this.rects) {
             if (rect.center[0] > leftEdge || rect.center[1] > bottomEdge) {
                 this.state.animationQueue.push(() => {
@@ -41,6 +46,12 @@ export class GameController {
             }
         }
     }
+
+    clearResizeFlag = () => {
+        this.state.isFieldResizing = false
+    }
+
+    clearResizeFlagDebounced = debounce(this.clearResizeFlag, 100)
 
 
     dispose = () => {
