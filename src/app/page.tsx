@@ -1,8 +1,9 @@
-
 export default function Home() {
-  return (
-      <div>
-        Test index page
-      </div>
-  );
+    return (
+        <div>
+            <h1>
+                Test index page
+            </h1>
+        </div>
+    );
 }
