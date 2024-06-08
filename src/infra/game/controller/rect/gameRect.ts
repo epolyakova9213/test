@@ -112,7 +112,11 @@ export class GameRect {
             this.frameTransform = eventTransform
             this.gameController.state.animationQueue.push(() => {
                 if (this.frameTransform) {
-                    this.goto(Point.sum(this.center, this.frameTransform!))
+                    this.center = Point.sum(this.center, this.frameTransform!)
+                    if (!Rect.isIn(this.rect, this.gameController.state.fieldSizes!)) {
+                        this.adjust(this.gameController.state.fieldSizes!)
+                    }
+                    this.goto()
                     this.frameTransform = undefined
                 }
             })
