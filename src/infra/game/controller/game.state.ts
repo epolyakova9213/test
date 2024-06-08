@@ -1,4 +1,5 @@
 import {AnimationQueue} from "@/infra/game/controller/animation-queue";
+import {IRect, Rect} from "@/infra/game/controller/math/rect";
 
 export class GameState {
     defaultWidth = 20
@@ -15,9 +16,22 @@ export class GameState {
         return !!(this.mainLayer)
     }
 
-    get fieldSizes() {
+    get fieldSizes(): IRect | undefined {
         if (!this.isValid) return undefined
-        return this.mainLayer.getBoundingClientRect()
+        const rect = this.mainLayer.getBoundingClientRect()
+        return Rect.fromSizesAndCenter(rect.width, rect.height)
+    }
+
+    get fieldSizesRestricted(): IRect | undefined {
+        if (!this.isValid) return undefined
+        const fieldSizes = this.fieldSizes!
+        const halfWidth = this.defaultWidth / 2
+        const halfHeight = this.defaultHeight / 2
+        return Rect.fromSizesAndCenter(
+            fieldSizes.width - this.defaultWidth,
+            fieldSizes.height - this.defaultHeight,
+            fieldSizes.center,
+        )
     }
 
     constructor() {
