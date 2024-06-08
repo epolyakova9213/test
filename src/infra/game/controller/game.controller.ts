@@ -6,7 +6,7 @@ export class GameController {
     state: GameState
     observer: ResizeObserver
 
-    rects: GameRect[] = []
+    gameRects: GameRect[] = []
 
     init(svg: typeof this.state.mainLayer) {
         if (this.state) return
@@ -17,41 +17,53 @@ export class GameController {
         this.state.mainLayer.addEventListener('dblclick', this.onDblClick)
         this.observer = new ResizeObserver(this.onResize)
         this.observer.observe(this.state.mainLayer)
+
+        this.generateRandom(0)
     }
 
     onDblClick = (event: MouseEvent) => {
         if (!this.state.isValid) return
         if (event.target !== this.state.mainLayer) return
 
-        const sizes = this.state.fieldSizes!.rect
+        const sizes = this.state.fieldSizes!.fieldRect
 
-        this.rects.push(new GameRect(this, [
+        this.gameRects.push(new GameRect(this, [
             Math.min(sizes.width - this.state.defaultWidth / 2, event.offsetX),
             Math.min(sizes.height - this.state.defaultHeight / 2, event.offsetY)
         ]))
     }
 
     onResize = () => {
-        const field = this.state.fieldSizes!.rect
+        const domRect = this.state.mainLayer.getBoundingClientRect()
+        const fieldRect = Rect.fromSizesAndCenter(domRect.width, domRect.height)
+        this.state.fieldSizes = {domRect, fieldRect}
 
-        for (let rect of this.rects) {
-            if (!Rect.isIn(rect.rect, field)) {
-                rect.adjust(field)
-                if (!rect.isSpawning) {
-                    this.state.animationQueue.push(rect.goto)
+        for (let gameRect of this.gameRects) {
+            if (!Rect.isIn(gameRect.rect, fieldRect)) {
+                gameRect.adjust(fieldRect)
+                if (!gameRect.isSpawning) {
+                    this.state.animationQueue.push(gameRect.goto)
                 }
             }
         }
     }
 
+    generateRandom(n: number) {
+        const domRect = this.state.fieldSizes!.fieldRect
+        for (let i = 0; i < n; i++) {
+            this.onDblClick({
+                offsetX: Math.random() * domRect.width,
+                offsetY: Math.random() * domRect.height,
+                target: this.state.mainLayer,
+            } as MouseEvent)
+        }
+    }
+
     dispose = () => {
         this.state.mainLayer.removeEventListener('dblclick', this.onDblClick)
-        this.rects.forEach(r => r.dispose())
-        this.rects = []
+        this.gameRects.forEach(r => r.dispose())
+        this.gameRects = []
         this.state.dispose()
         this.observer && this.observer.unobserve(this.state.mainLayer)
     }
-}
-
-const stub = () => {
 }

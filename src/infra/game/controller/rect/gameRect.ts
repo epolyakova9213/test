@@ -124,8 +124,8 @@ export class GameRect {
         this.gameController.state.animationQueue.push(() => {
             if (this.isDragging?.mousePosition) {
                 this.center = this.isDragging.mousePosition
-                if (!Rect.isIn(this.rect, fieldSizes.rect)) {
-                    this.adjust(fieldSizes.rect)
+                if (!Rect.isIn(this.rect, fieldSizes.fieldRect)) {
+                    this.adjust(fieldSizes.fieldRect)
                 }
                 this.goto()
                 this.isDragging!.mousePosition = undefined
