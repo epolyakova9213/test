@@ -14,10 +14,13 @@ export class GameState {
         return !!(this.mainLayer)
     }
 
-    get fieldSizes(): IRect | undefined {
+    get fieldSizes() {
         if (!this.isValid) return undefined
-        const rect = this.mainLayer.getBoundingClientRect()
-        return Rect.fromSizesAndCenter(rect.width, rect.height)
+        const domRect = this.mainLayer.getBoundingClientRect()
+        return {
+            rect: Rect.fromSizesAndCenter(domRect.width, domRect.height),
+            domRect: domRect
+        }
     }
 
     get fieldSizesRestricted(): IRect | undefined {
@@ -26,9 +29,9 @@ export class GameState {
         const halfWidth = this.defaultWidth / 2
         const halfHeight = this.defaultHeight / 2
         return Rect.fromSizesAndCenter(
-            fieldSizes.width - this.defaultWidth,
-            fieldSizes.height - this.defaultHeight,
-            fieldSizes.center,
+            fieldSizes.rect.width - this.defaultWidth,
+            fieldSizes.rect.height - this.defaultHeight,
+            fieldSizes.rect.center,
         )
     }
 

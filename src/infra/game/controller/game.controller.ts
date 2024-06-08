@@ -23,7 +23,7 @@ export class GameController {
         if (!this.state.isValid) return
         if (event.target !== this.state.mainLayer) return
 
-        const sizes = this.state.fieldSizes!
+        const sizes = this.state.fieldSizes!.rect
 
         this.rects.push(new GameRect(this, [
             Math.min(sizes.width - this.state.defaultWidth / 2, event.offsetX),
@@ -32,7 +32,7 @@ export class GameController {
     }
 
     onResize = () => {
-        const field = this.state.fieldSizes!
+        const field = this.state.fieldSizes!.rect
 
         for (let rect of this.rects) {
             if (!Rect.isIn(rect.rect, field)) {

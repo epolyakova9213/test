@@ -8,7 +8,10 @@ export class GameRect {
     g: SVGGElement
     path: SVGPathElement
     isSpawning = true
-    isDragging = false
+    isDragging: undefined | {
+        dragStart: IPoint,
+        mousePosition: IPoint | undefined
+    } = undefined
     state: GameState
     center: IPoint = [this.gameController.state.defaultWidth / 2, this.gameController.state.defaultHeight / 2]
     frameTransform: IPoint | undefined = undefined
@@ -81,9 +84,14 @@ export class GameRect {
         if (this.isSpawning) {
             this.spawnCenter[0] = Math.min(this.spawnCenter[0], fieldSizes.right - this.gameController.state.defaultWidth / 2)
             this.spawnCenter[1] = Math.min(this.spawnCenter[1], fieldSizes.bottom - this.gameController.state.defaultHeight / 2)
+            this.spawnCenter[0] = Math.max(this.spawnCenter[0], fieldSizes.left + this.gameController.state.defaultWidth / 2)
+            this.spawnCenter[1] = Math.max(this.spawnCenter[1], fieldSizes.top + this.gameController.state.defaultHeight / 2)
         }
         this.center[0] = Math.min(this.center[0], fieldSizes.right - this.gameController.state.defaultWidth / 2)
         this.center[1] = Math.min(this.center[1], fieldSizes.bottom - this.gameController.state.defaultHeight / 2)
+        this.center[0] = Math.max(this.center[0], fieldSizes.left + this.gameController.state.defaultWidth / 2)
+        this.center[1] = Math.max(this.center[1], fieldSizes.top + this.gameController.state.defaultHeight / 2)
+
     }
 
     onMouseDown = (event: MouseEvent) => {
@@ -92,35 +100,39 @@ export class GameRect {
         if (this.isSpawning) {
             this.stopSpawning()
         }
-        this.isDragging = true
+
+        const domRect = this.gameController.state.fieldSizes!.domRect
+        this.isDragging = {
+            dragStart: Point.diff([event.clientX, event.clientY], [domRect.left, domRect.top]),
+            mousePosition: Point.diff([event.clientX, event.clientY], [domRect.left, domRect.top])
+        }
         document.addEventListener('mouseup', this.onMouseUp)
         document.addEventListener('mousemove', this.onMouseMove)
     }
 
     onMouseUp = () => {
-        this.isDragging = false
         document.removeEventListener('mouseup', this.onMouseUp)
         document.removeEventListener('mousemove', this.onMouseMove)
     }
     onMouseMove = (event: MouseEvent) => {
         if (!this.isDragging) return
-        const eventTransform = [event.movementX, event.movementY]
+        if (!event.movementX && !event.movementY) return
 
-        if (this.frameTransform) {
-            this.frameTransform = Point.sum(eventTransform, this.frameTransform)
-        } else {
-            this.frameTransform = eventTransform
-            this.gameController.state.animationQueue.push(() => {
-                if (this.frameTransform) {
-                    this.center = Point.sum(this.center, this.frameTransform!)
-                    if (!Rect.isIn(this.rect, this.gameController.state.fieldSizes!)) {
-                        this.adjust(this.gameController.state.fieldSizes!)
-                    }
-                    this.goto()
-                    this.frameTransform = undefined
+
+        const fieldSizes = this.gameController.state.fieldSizes!
+
+        this.gameController.state.animationQueue.push(() => {
+            if (this.isDragging?.mousePosition) {
+                this.center = this.isDragging.mousePosition
+                if (!Rect.isIn(this.rect, fieldSizes.rect)) {
+                    this.adjust(fieldSizes.rect)
                 }
-            })
-        }
+                this.goto()
+                this.isDragging!.mousePosition = undefined
+            }
+        })
+
+        this.isDragging.mousePosition = Point.diff([event.clientX, event.clientY], [fieldSizes.domRect.left, fieldSizes.domRect.top])
     }
 
     dispose() {
