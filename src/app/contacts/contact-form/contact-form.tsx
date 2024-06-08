@@ -1,8 +1,8 @@
 'use client'
 
 import styles from "./contact-form.module.scss";
-import {Input} from "@/app/contacts/input/input";
-import {Button} from "@/app/contacts/button/button";
+import {Input} from "@/infra/controls/input/input";
+import {Button} from "@/infra/controls/button/button";
 import React, {useState} from "react";
 import {IObjectValidators, Validator} from "@/app/contacts/validators/Validator";
 import {emailRegexp} from "@/constants";
@@ -15,14 +15,14 @@ export const ContactForm: React.FC = () => {
         const validator = new Validator<IMessageForm>({
             email: '',
             name: '',
-            subject: '',
+            subject: 'Hello',
             message: '',
         })
         const validators: IObjectValidators<IMessageForm> = {
             email: {
                 validators: [
                     validator.required(),
-                    validator.checkMaxStringLength(20),
+                    validator.checkMaxStringLength(40),
                     validator.checkTemplate(emailRegexp),
                 ]
             },
@@ -84,10 +84,14 @@ export const ContactForm: React.FC = () => {
                    value={controller.state.data.message}
                    name={'Message'}
             />
-            <Button text={controller.state.resError || 'Send message'} disabled={!!controller.state.resError}
-                    containerClassName={styles.submit}
-                    onClick={controller.clearState}
-            />
+            {
+                controller.isTouched &&
+                <Button text={controller.isTouched && controller.state.error || 'Send message'}
+                        disabled={!!controller.state.error}
+                        containerClassName={styles.submit}
+                        onClick={controller.clearState}
+                />
+            }
         </div>
     )
 }

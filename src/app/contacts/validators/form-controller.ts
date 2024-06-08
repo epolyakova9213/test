@@ -4,13 +4,15 @@ import {IMessageForm} from "@/app/contacts/contracts";
 
 type IState<T extends Record<string, any>> = {
     data: IObjectType<T>,
-    resError: string | undefined
+    error: string | undefined
 }
 
 export class FormController<T extends Record<string, any>> {
     setState: (value: (((prevState: IState<T>) => IState<T>) | IState<T>)) => void
     state: IState<T>
+
     isReady = false
+    isTouched = false
 
     constructor(private validator: Validator<T>) {
     }
@@ -28,7 +30,7 @@ export class FormController<T extends Record<string, any>> {
     useHook = () => {
         const [state, setState] = useState<IState<T>>({
             data: this.validator.getObject(),
-            resError: undefined
+            error: undefined
         })
         this.setState = setState
         this.state = state
@@ -42,7 +44,7 @@ export class FormController<T extends Record<string, any>> {
         this.setState((prev) => {
             return {
                 ...prev,
-                resError: this.validator.checkObject()
+                error: this.validator.checkObject()
             }
         })
         return this.validator.checkObject()
@@ -50,6 +52,7 @@ export class FormController<T extends Record<string, any>> {
 
     onBlur = (event: FocusEvent<HTMLInputElement | HTMLTextAreaElement>) => {
         this.checkFields()
+        this.isTouched = true
     }
 
     clearState = () => {
@@ -60,7 +63,7 @@ export class FormController<T extends Record<string, any>> {
                 obj[key] = ''
             }
             this.validator.updateObject(obj)
-            return {data: obj, resError: undefined}
+            return {data: obj, error: undefined}
         })
     }
 }
