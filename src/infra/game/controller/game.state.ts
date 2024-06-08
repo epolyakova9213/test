@@ -7,8 +7,17 @@ export class GameState {
 
     animationQueue: AnimationQueue
 
+    container: HTMLDivElement
     mainLayer: SVGSVGElement
-    animationLayer: SVGSVGElement
+    _animationLayer: SVGSVGElement
+
+    set animationLayer(node: typeof this._animationLayer) {
+        this._animationLayer = node
+    }
+
+    get animationLayer() {
+        return this._animationLayer || this.mainLayer
+    }
 
     get isValid() {
         return !!(this.mainLayer && this.fieldSizes)

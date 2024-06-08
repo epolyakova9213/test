@@ -8,19 +8,22 @@ export const Game: React.FC = () => {
 
     const [controller] = useState(() => new GameController())
 
-    const svg = useRef<SVGSVGElement | null>(null)
+    const containerRef = useRef<HTMLDivElement | null>(null)
+
 
     useEffect(() => {
-        if (svg.current) {
-            controller.init(svg.current!)
+        if (containerRef.current) {
+            controller.init(containerRef.current!)
         }
 
         return controller.dispose
     }, [])
 
     return (
-        <svg ref={svg} className={styles.container}>
+        <div ref={containerRef} className={styles.container}>
+            <svg className={styles.mainLayer}/>
+            <svg className={styles.animationLayer}/>
+        </div>
 
-        </svg>
     )
 }

@@ -8,20 +8,28 @@ export class GameController {
 
     gameRects: GameRect[] = []
 
-    init(svg: typeof this.state.mainLayer) {
+    init(container: typeof this.state.container) {
         if (this.state) return
-
         this.state = new GameState()
-        this.state.mainLayer = svg
+        this.state.container = container
 
-        this.state.mainLayer.addEventListener('dblclick', this.onDblClick)
+        for (let i = 0; i < this.state.container.children.length; i++) {
+            switch (i) {
+                case 0:
+                    this.state.mainLayer = this.state.container.children.item(i) as SVGSVGElement
+                default:
+                    this.state.animationLayer = this.state.container.children.item(i) as SVGSVGElement
+
+            }
+        }
+
+        this.state.container.addEventListener('dblclick', this.onDblClick)
         this.observer = new ResizeObserver(this.onResize)
-        this.observer.observe(this.state.mainLayer)
+        this.observer.observe(this.state.container)
     }
 
     onDblClick = (event: MouseEvent) => {
         if (!this.state.isValid) return
-        if (event.target !== this.state.mainLayer) return
 
         const sizes = this.state.fieldSizes!.fieldRect
 
@@ -32,7 +40,7 @@ export class GameController {
     }
 
     onResize = () => {
-        const domRect = this.state.mainLayer.getBoundingClientRect()
+        const domRect = this.state.container.getBoundingClientRect()
         const fieldRect = Rect.fromSizesAndCenter(domRect.width, domRect.height)
         this.state.fieldSizes = {domRect, fieldRect}
 
@@ -52,16 +60,16 @@ export class GameController {
             this.onDblClick({
                 offsetX: Math.random() * domRect.width,
                 offsetY: Math.random() * domRect.height,
-                target: this.state.mainLayer,
+                target: this.state.animationLayer,
             } as MouseEvent)
         }
     }
 
     dispose = () => {
-        this.state.mainLayer.removeEventListener('dblclick', this.onDblClick)
+        this.state.container.removeEventListener('dblclick', this.onDblClick)
         this.gameRects.forEach(r => r.dispose())
         this.gameRects = []
         this.state.dispose()
-        this.observer && this.observer.unobserve(this.state.mainLayer)
+        this.observer && this.observer.unobserve(this.state.container)
     }
 }

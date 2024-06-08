@@ -41,7 +41,7 @@ export class GameRect {
         ))
         this.g.appendChild(this.path)
 
-        this.state.mainLayer.appendChild(this.g)
+        this.state.animationLayer.appendChild(this.g)
 
         this.spawn()
     }
@@ -69,6 +69,7 @@ export class GameRect {
                 this.state.animationQueue.push(nextStep)
             } else {
                 this.stopSpawning()
+                this.switchLayers()
             }
         }
 
@@ -78,6 +79,14 @@ export class GameRect {
     stopSpawning() {
         this.isSpawning = false
         this.spawnCenter = this.center
+    }
+
+    switchLayers = () => {
+        if (this.g.parentNode !== this.gameController.state.animationLayer) {
+            this.gameController.state.animationLayer.appendChild(this.g)
+        } else if (this.g.parentNode !== this.gameController.state.mainLayer) {
+            this.gameController.state.mainLayer.appendChild(this.g)
+        }
     }
 
     adjust(fieldSizes: IRect) {
@@ -99,6 +108,8 @@ export class GameRect {
 
         if (this.isSpawning) {
             this.stopSpawning()
+        } else {
+            this.gameController.state.animationQueue.push(this.switchLayers)
         }
 
         const domRect = this.gameController.state.fieldSizes!.domRect
@@ -113,6 +124,7 @@ export class GameRect {
     onMouseUp = () => {
         document.removeEventListener('mouseup', this.onMouseUp)
         document.removeEventListener('mousemove', this.onMouseMove)
+        this.gameController.state.animationQueue.push(this.switchLayers)
     }
     onMouseMove = (event: MouseEvent) => {
         if (!this.isDragging) return
