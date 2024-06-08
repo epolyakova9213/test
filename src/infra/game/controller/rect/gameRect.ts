@@ -57,12 +57,12 @@ export class GameRect {
         this.goto()
 
         let cycles = 60 // 60 frames
-        const delta = Point.diff(this.spawnCenter, this.center)
+        const delta = Point.scale(Point.diff(this.spawnCenter, this.center), cycles ** -1)
         const nextStep = () => {
             if (!this.isSpawning) return
             this.goto(Point.min(Point.sum(this.center, delta), this.spawnCenter))
 
-            if (Point.isEqual(this.center, this.spawnCenter)) {
+            if (!Point.isEqual(this.center, this.spawnCenter)) {
                 this.state.animationQueue.push(nextStep)
             } else {
                 this.stopSpawning()
