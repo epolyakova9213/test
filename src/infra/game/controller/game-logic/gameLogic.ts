@@ -3,15 +3,22 @@ import {GameField} from "@/infra/game/controller/game-field/game-field";
 import {IRect, Rect} from "@/infra/game/controller/math/rect";
 import {GameRect} from "@/infra/game/controller/rect/gameRect";
 import {IPoint, Point} from "@/infra/game/controller/math/point";
+import {ImagePatterns} from "@/infra/game/controller/image-patterns/image-patterns";
 
 export class GameLogic {
-    width = 20
+    width = 100
     height = 20
+    imagePatterns = new ImagePatterns()
     animationQueue = new AnimationQueue()
     gameRects: Map<GameRect, {
         isSpawning: boolean,
         spawnCenter: IPoint,
     }> = new Map()
+
+    urlsPatterns = [
+        `/next.svg`,
+        `/vercel.svg`,
+    ]
 
     constructor(public gameField: GameField) {
         this.init()
@@ -20,6 +27,16 @@ export class GameLogic {
     init() {
         this.gameField.resizesSubscribe(this.onFieldResize)
         this.gameField.container.addEventListener('dblclick', this.onDblClick)
+        const sizes = {
+            width: this.width,
+            height: this.height,
+        }
+        for (let layer of [this.gameField.mainLayer, this.gameField.animationLayer]) {
+            for (let url of this.urlsPatterns) {
+                this.imagePatterns.addPattern(layer, url, sizes)
+            }
+        }
+
     }
 
     onFieldResize = ({fieldRect}: { domRect: DOMRect, fieldRect: IRect }) => {
@@ -54,6 +71,9 @@ export class GameLogic {
             height: this.height,
             center: [this.width / 2, this.height / 2]
         })
+
+        const url = this.urlsPatterns[Math.floor(Math.random() * this.urlsPatterns.length)]
+        rect.g.style.fill = `url(#${url})`
 
         const spawnCenter = [
             Math.min(sizes.width - this.width / 2, event.offsetX),

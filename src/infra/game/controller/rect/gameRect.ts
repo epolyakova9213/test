@@ -28,18 +28,10 @@ export class GameRect {
     }
 
     constructor(public spaceProps: ISpaceProps) {
+        this.init()
     }
 
-
-    get rect(): IRect {
-        return Rect.fromSizesAndCenter(
-            this.spaceProps.width,
-            this.spaceProps.height,
-            this.spaceProps.center
-        )
-    }
-
-    setOnLayer = (layer: SVGSVGElement) => {
+    init() {
         this.g = document.createElementNS("http://www.w3.org/2000/svg", 'g')
         this.g.classList.add('rect')
         this.g.addEventListener('mousedown', this.onMouseDown)
@@ -50,7 +42,17 @@ export class GameRect {
             this.spaceProps.height
         ))
         this.g.appendChild(this.path)
+    }
 
+    get rect(): IRect {
+        return Rect.fromSizesAndCenter(
+            this.spaceProps.width,
+            this.spaceProps.height,
+            this.spaceProps.center
+        )
+    }
+
+    setOnLayer = (layer: SVGSVGElement) => {
         layer.appendChild(this.g)
     }
 
@@ -118,10 +120,6 @@ export class GameRect {
         )
 
         this.isDragging.mousePosition = Point.diff([event.clientX, event.clientY], [domRect.left, domRect.top])
-    }
-
-    adjustGameRect(fieldSizes) {
-
     }
 
     dispose() {
