@@ -2,7 +2,6 @@ import {GameState} from "@/infra/game/controller/game.state";
 import {GameController} from "@/infra/game/controller/game.controller";
 import {Matrix} from "@/infra/game/controller/math/matrix";
 import {IRect, Rect} from "@/infra/game/controller/math/rect";
-import {identityMatrix} from "@/infra/game/controller/constants";
 import {IPoint, Point} from "@/infra/game/controller/math/point";
 
 export class GameRect {
@@ -57,19 +56,13 @@ export class GameRect {
     spawn = () => {
         this.goto()
 
-        let cycles = 500 // 60 frames
-        let deltaX = this.spawnCenter[0] / cycles
-        let deltaY = this.spawnCenter[1] / cycles
-
+        let cycles = 60 // 60 frames
+        const delta = Point.diff(this.spawnCenter, this.center)
         const nextStep = () => {
             if (!this.isSpawning) return
+            this.goto(Point.min(Point.sum(this.center, delta), this.spawnCenter))
 
-            this.goto([
-                Math.min(this.center[0] + deltaX, this.spawnCenter[0]),
-                Math.min(this.center[1] + deltaY, this.spawnCenter[1])
-            ])
-
-            if (this.center[0] !== this.spawnCenter[0] || this.center[1] !== this.spawnCenter[1]) {
+            if (Point.isEqual(this.center, this.spawnCenter)) {
                 this.state.animationQueue.push(nextStep)
             } else {
                 this.stopSpawning()
