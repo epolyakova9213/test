@@ -3,11 +3,14 @@ import {GameField} from "@/infra/game/controller/game-field/game-field";
 import {GameState} from "@/infra/game/controller/game.state";
 import {IRect, Rect} from "@/infra/game/controller/math/rect";
 import {GameRect} from "@/infra/game/controller/rect/gameRect";
-import {Point} from "@/infra/game/controller/math/point";
+import {IPoint, Point} from "@/infra/game/controller/math/point";
 
 export class GameLogic {
     animationQueue = new AnimationQueue()
-    gameRects: GameRect[] = []
+    gameRects: Map<GameRect, {
+        isSpawning: boolean,
+        spawnCenter: IPoint,
+    }> = new Map()
 
     constructor(public gameField: GameField, public gameState: GameState) {
         this.init()
@@ -19,32 +22,47 @@ export class GameLogic {
     }
 
     onFieldResize = ({fieldRect}: { domRect: DOMRect, fieldRect: IRect }) => {
-        for (let gameRect of this.gameRects) {
+        this.gameRects.forEach(({spawnCenter, isSpawning}, gameRect) => {
             if (!Rect.isIn(gameRect.rect, fieldRect)) {
-                gameRect.adjust(fieldRect)
-                if (!gameRect.isSpawning) {
+                this.adjustGameRect(fieldRect, gameRect)
+                if (!isSpawning) {
                     this.animationQueue.push(gameRect.goto)
                 }
             }
+        })
+    }
+
+    adjustGameRect(fieldSizes: IRect, rect: GameRect) {
+        const entry = this.gameRects.get(rect)
+        if (!entry) return
+        if (entry.isSpawning) {
+            entry.spawnCenter[0] = Math.min(entry.spawnCenter[0], fieldSizes.right - rect.spaceProps.width / 2)
+            entry.spawnCenter[1] = Math.min(entry.spawnCenter[1], fieldSizes.bottom - rect.spaceProps.height / 2)
+            entry.spawnCenter[0] = Math.max(entry.spawnCenter[0], fieldSizes.left + rect.spaceProps.width / 2)
+            entry.spawnCenter[1] = Math.max(entry.spawnCenter[1], fieldSizes.top + rect.spaceProps.height / 2)
         }
+        rect.adjust(fieldSizes)
     }
 
     onDblClick = (event: MouseEvent) => {
         const sizes = this.gameField.fieldRect
 
 
-        const rect = new GameRect(this,
-            {
-                width: this.gameState.defaultWidth,
-                height: this.gameState.defaultHeight,
-                center: [this.gameState.defaultWidth / 2, this.gameState.defaultHeight / 2]
-            },
-            [
-                Math.min(sizes.width - this.gameState.defaultWidth / 2, event.offsetX),
-                Math.min(sizes.height - this.gameState.defaultHeight / 2, event.offsetY)
-            ])
+        const rect = new GameRect({
+            width: this.gameState.defaultWidth,
+            height: this.gameState.defaultHeight,
+            center: [this.gameState.defaultWidth / 2, this.gameState.defaultHeight / 2]
+        })
 
-        this.gameRects.push(rect)
+        const spawnCenter = [
+            Math.min(sizes.width - this.gameState.defaultWidth / 2, event.offsetX),
+            Math.min(sizes.height - this.gameState.defaultHeight / 2, event.offsetY)
+        ]
+
+        this.gameRects.set(rect, {
+            isSpawning: true,
+            spawnCenter: spawnCenter
+        })
         rect.subscribeOn('mousedown', this.onGameRectMouseDown)
         rect.subscribeOn('mouseup', this.onGameRectMouseUp)
 
@@ -77,16 +95,19 @@ export class GameLogic {
     spawnGameRect(rect: GameRect) {
         rect.goto()
 
-        let cycles = 60 // 60 frames
-        const delta = Point.scale(Point.diff(rect.spawnCenter, rect.spaceProps.center), cycles ** -1)
-        const nextStep = () => {
-            if (!rect.isSpawning) return
-            rect.goto(Point.min(Point.sum(rect.spaceProps.center, delta), rect.spawnCenter))
+        const entry = this.gameRects.get(rect)
+        if (!entry) return
 
-            if (!Point.isEqual(rect.spaceProps.center, rect.spawnCenter)) {
+        let cycles = 60 // 60 frames
+        const delta = Point.scale(Point.diff(entry.spawnCenter, rect.spaceProps.center), cycles ** -1)
+        const nextStep = () => {
+            if (!entry.isSpawning) return
+            rect.goto(Point.min(Point.sum(rect.spaceProps.center, delta), entry.spawnCenter))
+
+            if (!Point.isEqual(rect.spaceProps.center, entry.spawnCenter)) {
                 this.animationQueue.push(nextStep)
             } else {
-                this.stopSpawnGameRect(rect)
+                entry.isSpawning = false
                 this.switchGameRectLayer(rect)
             }
         }
@@ -95,8 +116,10 @@ export class GameLogic {
     }
 
     onGameRectMouseDown = (rect: GameRect) => {
-        if (rect.isSpawning) {
-            this.stopSpawnGameRect(rect)
+        const entry = this.gameRects.get(rect)
+        if (!entry) return
+        if (entry.isSpawning) {
+            entry.isSpawning = false
         } else {
             this.animationQueue.push(() => this.switchGameRectLayer(rect))
         }
@@ -106,15 +129,10 @@ export class GameLogic {
         this.animationQueue.push(() => this.switchGameRectLayer(rect))
     }
 
-    stopSpawnGameRect(rect: GameRect) {
-        rect.isSpawning = false
-        rect.spawnCenter = rect.spaceProps.center
-    }
-
     dispose() {
         this.gameField.container.removeEventListener('dblclick', this.onDblClick)
         this.animationQueue.dispose()
-        this.gameRects.forEach(r => r.dispose())
-        this.gameRects.length = 0
+        this.gameRects.forEach((value, gameRect) => gameRect.dispose())
+        this.gameRects.clear()
     }
 }

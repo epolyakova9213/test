@@ -13,7 +13,6 @@ type ISubscribeEventType = 'mousedown' | 'mouseup'
 export class GameRect {
     g: SVGGElement
     path: SVGPathElement
-    isSpawning = true
     isDragging: undefined | {
         dragStart: IPoint,
         mousePosition: IPoint | undefined
@@ -28,7 +27,7 @@ export class GameRect {
         this.subscribers[eventType].push(f)
     }
 
-    constructor(public spaceProps: ISpaceProps, public spawnCenter: IPoint) {
+    constructor(public spaceProps: ISpaceProps) {
     }
 
 
@@ -69,12 +68,6 @@ export class GameRect {
     }
 
     adjust(fieldSizes: IRect) {
-        if (this.isSpawning) {
-            this.spawnCenter[0] = Math.min(this.spawnCenter[0], fieldSizes.right - this.spaceProps.width / 2)
-            this.spawnCenter[1] = Math.min(this.spawnCenter[1], fieldSizes.bottom - this.spaceProps.height / 2)
-            this.spawnCenter[0] = Math.max(this.spawnCenter[0], fieldSizes.left + this.spaceProps.width / 2)
-            this.spawnCenter[1] = Math.max(this.spawnCenter[1], fieldSizes.top + this.spaceProps.height / 2)
-        }
         this.spaceProps.center[0] = Math.min(this.spaceProps.center[0], fieldSizes.right - this.spaceProps.width / 2)
         this.spaceProps.center[1] = Math.min(this.spaceProps.center[1], fieldSizes.bottom - this.spaceProps.height / 2)
         this.spaceProps.center[0] = Math.max(this.spaceProps.center[0], fieldSizes.left + this.spaceProps.width / 2)
@@ -125,6 +118,10 @@ export class GameRect {
         )
 
         this.isDragging.mousePosition = Point.diff([event.clientX, event.clientY], [domRect.left, domRect.top])
+    }
+
+    adjustGameRect(fieldSizes) {
+
     }
 
     dispose() {
