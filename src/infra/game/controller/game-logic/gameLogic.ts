@@ -6,7 +6,7 @@ import {IPoint, Point} from "@/infra/game/controller/math/point";
 import {ImagePatterns} from "@/infra/game/controller/image-patterns/image-patterns";
 
 export class GameLogic {
-    width = 100
+    width = 20
     height = 20
     imagePatterns = new ImagePatterns()
     animationQueue = new AnimationQueue()
@@ -37,6 +37,9 @@ export class GameLogic {
             }
         }
 
+        setTimeout(() => {
+            this.generateRandomObjects(200)
+        }, 2000)
     }
 
     onFieldResize = ({fieldRect}: { domRect: DOMRect, fieldRect: IRect }) => {
@@ -76,8 +79,8 @@ export class GameLogic {
         rect.g.style.fill = `url(#${url})`
 
         const spawnCenter = [
-            Math.min(sizes.width - this.width / 2, event.offsetX),
-            Math.min(sizes.height - this.height / 2, event.offsetY)
+            Math.max(Math.min(sizes.width - this.width / 2, event.offsetX), this.width / 2),
+            Math.max(Math.min(sizes.height - this.height / 2, event.offsetY), this.height / 2)
         ]
 
         this.gameRects.set(rect, {

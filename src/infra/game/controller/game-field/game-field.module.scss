@@ -19,6 +19,7 @@
 .animationLayer {
   z-index: 1;
   pointer-events: none;
+  will-change: transform;
   & > * {
     pointer-events: all;
   }
