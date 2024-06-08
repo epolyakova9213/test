@@ -11,7 +11,7 @@ export class GameState {
     animationLayer: SVGSVGElement
 
     get isValid() {
-        return !!(this.mainLayer)
+        return !!(this.mainLayer && this.fieldSizes)
     }
 
     fieldSizes: undefined | { fieldRect: IRect, domRect: DOMRect }

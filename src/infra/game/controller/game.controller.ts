@@ -17,8 +17,6 @@ export class GameController {
         this.state.mainLayer.addEventListener('dblclick', this.onDblClick)
         this.observer = new ResizeObserver(this.onResize)
         this.observer.observe(this.state.mainLayer)
-
-        this.generateRandom(0)
     }
 
     onDblClick = (event: MouseEvent) => {
