@@ -1,6 +1,5 @@
 import {GameRect} from "@/infra/game/controller/rect/gameRect";
 import {GameState} from "@/infra/game/controller/game.state";
-import {debounce} from "@/infra/game/controller/utils";
 import {Rect} from "@/infra/game/controller/math/rect";
 
 export class GameController {
@@ -33,7 +32,6 @@ export class GameController {
     }
 
     onResize = () => {
-        this.state.isFieldResizing = true
         const field = this.state.fieldSizes!
 
         for (let rect of this.rects) {
@@ -45,13 +43,6 @@ export class GameController {
             }
         }
     }
-
-    clearResizeFlag = () => {
-        this.state.isFieldResizing = false
-    }
-
-    clearResizeFlagDebounced = debounce(this.clearResizeFlag, 100)
-
 
     dispose = () => {
         this.state.mainLayer.removeEventListener('dblclick', this.onDblClick)

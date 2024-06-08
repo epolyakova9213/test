@@ -1,4 +1,4 @@
-import {IPoint} from "@/infra/game/controller/contracts";
+import {IPoint} from "@/infra/game/controller/math/point";
 
 export type IRect = {
     center: IPoint,
