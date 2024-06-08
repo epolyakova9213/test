@@ -1,0 +1,87 @@
+.fieldContainer {
+  position: relative;
+  display: flex;
+  justify-content: center;
+  flex-direction: column;
+  align-items: center;
+  width: 100%;
+}
+
+.underField {
+  height: 2px;
+  position: relative;
+  top: -1px;
+  transition: 0.5s ease;
+  width: 0;
+}
+
+.text {
+  pointer-events: none;
+  position: absolute;
+  background: white;
+  top: 15px;
+  left: 17px;
+  font-size: 16px;
+  color: #626161;
+  transition: 0.5s ease;
+}
+
+.field:focus {
+  outline: none;
+}
+
+.input {
+  line-height: 1.5;
+  font-weight: 400;
+  width: 100%;
+  background-color: white;
+  height: 50px;
+  color: #626161;
+  border: 1px solid #31383d;
+  transition: all 0.5s;
+  padding: 0.9em 1em;
+  box-shadow: none !important;
+  font-size: 1em;
+}
+
+.field:focus + .underField {
+  background-color: #f07f81;
+  width: 100%;
+}
+
+.field:focus + .underField + .text {
+  color: #f07f81;
+  position: absolute;
+  top: -8px;
+  left: 8px;
+  padding: 0 5px;
+}
+
+.focusedDiv {
+  background-color: #f07f81;
+  width: 100%;
+}
+
+.focusedText {
+  color: #f07f81;
+  position: absolute;
+  top: -8px;
+  left: 8px;
+  padding: 0 5px;
+}
+
+.textarea {
+  overflow: auto;
+  height: 215px;
+  position: relative;
+  resize: none;
+}
+
+.textarea::-webkit-scrollbar {
+  width: 2px;
+}
+
+.textarea::-webkit-scrollbar-thumb {
+  background-color: #f07f81;
+  border-radius: 3px;
+}

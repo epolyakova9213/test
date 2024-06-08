@@ -1,0 +1,24 @@
+.submitBtn, .submitBtn:focus {
+  cursor: pointer;
+  font-size: 1rem;
+  padding: 1rem;
+  background: transparent;
+  border: 1px solid var(--secondary-color);
+  color: var(--secondary-color);
+  transition: 0.8s;
+
+  &:hover {
+    color: var(--white);
+    background-color: var(--secondary-color);
+  }
+
+  &:disabled {
+    cursor: default;
+    opacity: .5;
+
+    &:hover {
+      background: transparent;
+      color: var(--secondary-color);
+    }
+  }
+}

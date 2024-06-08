@@ -1,10 +1,13 @@
 import type {Metadata} from "next";
-import {Inter} from "next/font/google";
+import {Comic_Neue, Inter, Open_Sans, Roboto} from "next/font/google";
 import "./globals.css";
 import {Root} from "@/infra/root/root";
 import React from "react";
 
-const inter = Inter({subsets: ["latin"]});
+const roboto = Open_Sans({
+    weight: '400',
+    subsets: ['latin'],
+})
 
 export const metadata: Metadata = {
     title: "NextJS Index",
@@ -17,7 +20,7 @@ export default function RootLayout({
 }>) {
     return (
         <html lang="en">
-        <body className={inter.className}>
+        <body className={roboto.className}>
         <Root>
             {children}
         </Root>

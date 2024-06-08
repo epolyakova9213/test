@@ -1,0 +1,32 @@
+.form {
+  min-width: 300px;
+  width: 50%;
+  display: grid;
+  grid-template-areas:
+        "name subject"
+        "email email"
+        "message message"
+        "submit submit";
+  gap: 10px;
+  margin: 0 auto;
+}
+
+.name {
+  grid-area: name;
+}
+
+.subject {
+  grid-area: subject;
+}
+
+.email {
+  grid-area: email;
+}
+
+.message {
+  grid-area: message;
+}
+
+.submit {
+  grid-area: submit;
+}
