@@ -1,18 +1,19 @@
 import {AnimationQueue} from "@/infra/game/controller/animation-queue";
 import {GameField} from "@/infra/game/controller/game-field/game-field";
-import {GameState} from "@/infra/game/controller/game.state";
 import {IRect, Rect} from "@/infra/game/controller/math/rect";
 import {GameRect} from "@/infra/game/controller/rect/gameRect";
 import {IPoint, Point} from "@/infra/game/controller/math/point";
 
 export class GameLogic {
+    width = 20
+    height = 20
     animationQueue = new AnimationQueue()
     gameRects: Map<GameRect, {
         isSpawning: boolean,
         spawnCenter: IPoint,
     }> = new Map()
 
-    constructor(public gameField: GameField, public gameState: GameState) {
+    constructor(public gameField: GameField) {
         this.init()
     }
 
@@ -49,14 +50,14 @@ export class GameLogic {
 
 
         const rect = new GameRect({
-            width: this.gameState.defaultWidth,
-            height: this.gameState.defaultHeight,
-            center: [this.gameState.defaultWidth / 2, this.gameState.defaultHeight / 2]
+            width: this.width,
+            height: this.height,
+            center: [this.width / 2, this.height / 2]
         })
 
         const spawnCenter = [
-            Math.min(sizes.width - this.gameState.defaultWidth / 2, event.offsetX),
-            Math.min(sizes.height - this.gameState.defaultHeight / 2, event.offsetY)
+            Math.min(sizes.width - this.width / 2, event.offsetX),
+            Math.min(sizes.height - this.height / 2, event.offsetY)
         ]
 
         this.gameRects.set(rect, {
