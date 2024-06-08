@@ -1,0 +1,25 @@
+
+.container {
+  width: 100%;
+  height: 100%;
+  position: relative;
+}
+
+.mainLayer, .animationLayer {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+}
+
+.mainLayer {
+  z-index: 0;
+}
+
+.animationLayer {
+  z-index: 1;
+  pointer-events: none;
+  & > * {
+    pointer-events: all;
+  }
+}
