@@ -1,14 +1,14 @@
-import {GameState} from "@/infra/game/controller/game.state";
 import {Matrix} from "@/infra/game/controller/math/matrix";
 import {IRect, Rect} from "@/infra/game/controller/math/rect";
 import {IPoint, Point} from "@/infra/game/controller/math/point";
-import {GameLogic} from "@/infra/game/controller/game-logic/gameLogic";
 
 type ISpaceProps = {
     center: IPoint,
     width: number,
     height: number
 }
+
+type ISubscribeEventType = 'mousedown' | 'mouseup'
 
 export class GameRect {
     g: SVGGElement
@@ -18,20 +18,17 @@ export class GameRect {
         dragStart: IPoint,
         mousePosition: IPoint | undefined
     } = undefined
-    state: GameState
 
-    subscribers: {
-        'mousedown': ((rect: GameRect) => void)[]
-    } = {
-        mousedown: []
+    subscribers: Record<ISubscribeEventType, ((rect: GameRect) => void)[]> = {
+        mousedown: [],
+        mouseup: []
     }
 
     subscribeOn(eventType: keyof typeof this.subscribers, f: (gameRect: GameRect) => void) {
         this.subscribers[eventType].push(f)
     }
 
-    constructor(public gameController: GameLogic, public spaceProps: ISpaceProps, public spawnCenter: IPoint) {
-        this.state = this.gameController.gameState
+    constructor(public spaceProps: ISpaceProps, public spawnCenter: IPoint) {
     }
 
 
@@ -88,7 +85,9 @@ export class GameRect {
     onMouseDown = (event: MouseEvent) => {
         if (!event.target || !this.g.contains(event.target as Node)) return
 
-        const domRect = this.gameController.gameField.domRect
+        const domRect = (this.parentLayer as SVGSVGElement)?.getBoundingClientRect()
+        if (!domRect) return
+
         this.isDragging = {
             dragStart: Point.diff([event.clientX, event.clientY], [domRect.left, domRect.top]),
             mousePosition: Point.diff([event.clientX, event.clientY], [domRect.left, domRect.top])
@@ -102,32 +101,34 @@ export class GameRect {
     onMouseUp = () => {
         document.removeEventListener('mouseup', this.onMouseUp)
         document.removeEventListener('mousemove', this.onMouseMove)
-        this.gameController.gameState.animationQueue.push(() => this.gameController.switchGameRectLayer(this))
+        this.subscribers.mouseup.forEach(f => f(this))
     }
     onMouseMove = (event: MouseEvent) => {
         if (!this.isDragging) return
         if (!event.movementX && !event.movementY) return
 
+        const domRect = (this.parentLayer as SVGSVGElement)?.getBoundingClientRect()
+        if (!domRect) return
 
-        const fieldRect = this.gameController.gameField.fieldRect
+        const fieldRect = Rect.fromSizesAndCenter(domRect.width, domRect.height)
 
-        this.gameController.gameState.animationQueue.push(() => {
-            if (this.isDragging?.mousePosition) {
-                this.spaceProps.center = this.isDragging.mousePosition
-                if (!Rect.isIn(this.rect, fieldRect)) {
-                    this.adjust(fieldRect)
+        requestAnimationFrame(() => {
+                if (this.isDragging?.mousePosition) {
+                    this.spaceProps.center = this.isDragging.mousePosition
+                    if (!Rect.isIn(this.rect, fieldRect)) {
+                        this.adjust(fieldRect)
+                    }
+                    this.goto()
+                    this.isDragging!.mousePosition = undefined
                 }
-                this.goto()
-                this.isDragging!.mousePosition = undefined
             }
-        })
+        )
 
-        const domRect = this.gameController.gameField.domRect
         this.isDragging.mousePosition = Point.diff([event.clientX, event.clientY], [domRect.left, domRect.top])
     }
 
     dispose() {
-        this.gameController.gameField.mainLayer.removeChild(this.g)
+        (this.parentLayer as SVGSVGElement).removeChild(this.g)
         this.onMouseUp()
         this.g.removeEventListener('mousedown', this.onMouseDown)
     }

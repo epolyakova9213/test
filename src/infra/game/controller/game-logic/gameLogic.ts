@@ -46,6 +46,7 @@ export class GameLogic {
 
         this.gameRects.push(rect)
         rect.subscribeOn('mousedown', this.onGameRectMouseDown)
+        rect.subscribeOn('mouseup', this.onGameRectMouseUp)
 
         this.animationQueue.push(() => {
             rect.setOnLayer(this.gameField.animationLayer)
@@ -99,6 +100,10 @@ export class GameLogic {
         } else {
             this.animationQueue.push(() => this.switchGameRectLayer(rect))
         }
+    }
+
+    onGameRectMouseUp = (rect: GameRect) => {
+        this.animationQueue.push(() => this.switchGameRectLayer(rect))
     }
 
     stopSpawnGameRect(rect: GameRect) {
