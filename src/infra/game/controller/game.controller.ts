@@ -2,6 +2,15 @@ import {GameRect} from "@/infra/game/controller/rect/gameRect";
 import {GameState} from "@/infra/game/controller/game.state";
 import {Rect} from "@/infra/game/controller/math/rect";
 
+export class GameField {
+    dataLayer: SVGSVGElement
+    animationLayer: SVGSVGElement
+
+    constructor(public container: HTMLDivElement) {
+
+    }
+}
+
 export class GameController {
     state: GameState
     observer: ResizeObserver
