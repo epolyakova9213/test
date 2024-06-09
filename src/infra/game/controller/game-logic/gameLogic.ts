@@ -16,8 +16,8 @@ export class GameLogic {
     }> = new Map()
 
     urlsPatterns = [
-        `/next.svg`,
-        `/vercel.svg`,
+        `/1.png`,
+        `/2.png`,
     ]
 
     constructor(public gameField: GameField) {

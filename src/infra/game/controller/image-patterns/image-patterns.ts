@@ -7,6 +7,8 @@ export class ImagePatterns {
         pattern.setAttribute('patternUnits', 'userSpaceOnUse')
         pattern.setAttribute('width', `${sizes.width}px`)
         pattern.setAttribute('height', `${sizes.height}px`)
+        pattern.setAttribute('x', `${-sizes.width / 2}px`)
+        pattern.setAttribute('y', `${-sizes.height / 2}px`)
 
         const image = document.createElementNS("http://www.w3.org/2000/svg", 'image')
         image.setAttribute('width', `${sizes.width}px`)
