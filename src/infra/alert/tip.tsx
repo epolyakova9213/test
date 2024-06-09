@@ -1,20 +1,18 @@
-import React, {useState} from 'react'
+import React from 'react'
 import styles from './alert.module.scss'
 
-export const Tip: React.FC<React.PropsWithChildren> = React.memo(({
-                                                                      children,
-                                                                  }) => {
 
-    const [child, setChild] = useState(() => children)
+type ITip = React.HTMLAttributes<HTMLDivElement>
+export const Tip: React.FC<React.PropsWithChildren<ITip>> = React.memo(({
+                                                                            children,
+                                                                            ...props
+                                                                        }) => {
 
-
-    if (!child) return null
+    if (!children) return null
     return (
         <div className={styles.container}>
             <div className={styles.textWrapper}
-                 onAnimationEnd={() => {
-                     setChild(null)
-                 }}>
+                 {...props}>
                 {
                     children
                 }

@@ -15,10 +15,10 @@ export const ContactForm: React.FC = () => {
     const [submitMsg, setSubmitMsg] = useState('')
     const [controller] = useState(() => {
         const validator = new Validator<IMessageForm>({
-            email: 'email@mail.ru',
-            name: 'Name',
-            subject: 'Hello',
-            message: 'Msg',
+            email: '',
+            name: '',
+            subject: '',
+            message: '',
         })
         const validators: IObjectValidators<IMessageForm> = {
             email: {
@@ -87,21 +87,22 @@ export const ContactForm: React.FC = () => {
                    name={'Message'}
             />
             {
-                // controller.isTouched &&
-                <Button text={controller.isTouched && controller.state.error || 'Send message'}
+                <Button text={controller.state.isTouched && controller.state.error || 'Send message'}
                         disabled={!!controller.state.error}
                         containerClassName={styles.submit}
                         onClick={() => {
                             if (controller.state.error) return
                             controller.clearState()
-                            setSubmitMsg('Success')
+                            setSubmitMsg('Success!')
                         }}
                 />
             }
 
             {
                 submitMsg &&
-                <Tip>
+                <Tip onAnimationEnd={() => {
+                    setSubmitMsg(null)
+                }}>
                     {
                         submitMsg
                     }

@@ -9,6 +9,7 @@
 
 .textWrapper {
   @extend %flex;
+  transform: translateY(-200%);
   font-size: var(--font-size-primary);
   background: var(--color-bg-primary);
   color: var(--color-light);
@@ -20,6 +21,7 @@
   border-radius: var(--font-size-primary);
   position: relative;
   animation: tip 3s;
+  animation-iteration-count: 1;
 }
 
 @keyframes tip {
