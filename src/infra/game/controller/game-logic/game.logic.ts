@@ -35,9 +35,11 @@ export class GameLogic {
         }
 
 
+        let randomObjNum = 10
+        randomObjNum &&
         setTimeout(() => {
-            this.generateRandomObjects(200)
-        }, 2000)
+            this.generateRandomObjects(randomObjNum)
+        }, 500)
     }
 
     onFieldResize = ({fieldRect}: { domRect: DOMRect, fieldRect: IRect }) => {
