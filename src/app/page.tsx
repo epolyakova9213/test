@@ -1,9 +1,13 @@
+import styles from './home.module.scss'
+
 export default function Home() {
     return (
-        <div>
-            <h1>
-                Test index page
-            </h1>
+        <div className={styles.container}>
+            <p className={styles.article}>
+                There is an interactive field on the Game page. Double clicking on an empty
+                space in the field adds a rectangle to the field. The rectangle is also draggable
+                within the field.
+            </p>
         </div>
     );
 }

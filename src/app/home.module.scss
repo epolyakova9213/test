@@ -1,0 +1,12 @@
+@import 'src/infra/styles/templates.module';
+
+.container {
+  @extend %flex;
+}
+
+.article {
+  width: 350px;
+  min-width: 300px;
+  margin: 20px auto;
+  text-indent: 20px;
+}

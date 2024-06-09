@@ -1,5 +1,5 @@
 import React from 'react'
-import styles from './alert.module.scss'
+import styles from './tip.module.scss'
 
 
 type ITip = React.HTMLAttributes<HTMLDivElement>
