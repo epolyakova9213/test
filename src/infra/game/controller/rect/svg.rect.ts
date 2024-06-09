@@ -2,15 +2,13 @@ import {Matrix} from "@/infra/game/controller/math/matrix";
 import {IRect, Rect} from "@/infra/game/controller/math/rect";
 import {IPoint, Point} from "@/infra/game/controller/math/point";
 
-type ISpaceProps = {
+export type ISpaceProps = {
     center: IPoint,
     width: number,
     height: number
 }
 
-type ISubscribeEventType = 'mousedown' | 'mouseup'
-
-export class GameRect {
+export class SvgRect {
     g: SVGGElement
     path: SVGPathElement
     isDragging: undefined | {
@@ -19,15 +17,6 @@ export class GameRect {
         innerOffset: IPoint,
     } = undefined
 
-    subscribers: Record<ISubscribeEventType, ((rect: GameRect) => void)[]> = {
-        mousedown: [],
-        mouseup: []
-    }
-
-    subscribeOn(eventType: keyof typeof this.subscribers, f: (gameRect: GameRect) => void) {
-        this.subscribers[eventType].push(f)
-    }
-
     constructor(public spaceProps: ISpaceProps) {
         this.init()
     }
@@ -35,7 +24,7 @@ export class GameRect {
     init() {
         this.g = document.createElementNS("http://www.w3.org/2000/svg", 'g')
         this.g.classList.add('rect')
-        this.g.addEventListener('mousedown', this.onMouseDown)
+        this.g.addEventListener('mousedown', this.onMouseDownBound)
 
         this.path = document.createElementNS("http://www.w3.org/2000/svg", 'path')
         this.path.setAttribute('d', this.getDAttrBySides(
@@ -78,35 +67,32 @@ export class GameRect {
 
     }
 
-    onMouseDown = (event: MouseEvent) => {
+    onMouseDown(event: MouseEvent) {
         if (!event.target || !this.g.contains(event.target as Node)) return
 
         const domRect = (this.parentLayer as SVGSVGElement)?.getBoundingClientRect()
         if (!domRect) return
 
-        const selfDomRect = this.g.getBoundingClientRect()
         let innerOffset = [event.offsetX, event.offsetY]
         innerOffset = Point.diff(innerOffset, this.spaceProps.center)
-
-        console.log(innerOffset)
 
         this.isDragging = {
             dragStart: [event.offsetX, event.offsetY],
             newCenterPosition: this.spaceProps.center,
             innerOffset,
         }
-        document.addEventListener('mouseup', this.onMouseUp)
-        document.addEventListener('mousemove', this.onMouseMove)
-
-        this.subscribers.mousedown.forEach(f => f(this))
+        document.addEventListener('mouseup', this.onMouseUpBound)
+        document.addEventListener('mousemove', this.onMouseMoveBound)
     }
+    onMouseDownBound = this.onMouseDown.bind(this)
 
-    onMouseUp = () => {
-        document.removeEventListener('mouseup', this.onMouseUp)
-        document.removeEventListener('mousemove', this.onMouseMove)
-        this.subscribers.mouseup.forEach(f => f(this))
+    onMouseUp() {
+        document.removeEventListener('mouseup', this.onMouseUpBound)
+        document.removeEventListener('mousemove', this.onMouseMoveBound)
     }
-    onMouseMove = (event: MouseEvent) => {
+    onMouseUpBound = this.onMouseUp.bind(this)
+
+    onMouseMove(event: MouseEvent) {
         if (!this.isDragging) return
         if (!event.movementX && !event.movementY) return
 
@@ -129,10 +115,11 @@ export class GameRect {
 
         this.isDragging.newCenterPosition = Point.diff([event.clientX, event.clientY], [domRect.left, domRect.top])
     }
+    onMouseMoveBound = this.onMouseMove.bind(this)
 
     dispose() {
         (this.parentLayer as SVGSVGElement).removeChild(this.g)
-        this.onMouseUp()
+        this.onMouseUpBound()
         this.g.removeEventListener('mousedown', this.onMouseDown)
     }
 }

@@ -1,17 +1,9 @@
-import {IRect, Rect} from "@/infra/game/controller/math/rect";
-import styles from './game-field.module.scss'
+import {Rect} from "@/infra/game/controller/math/rect";
+import styles from './field.module.scss'
+import {IResizeSubscriber} from "@/infra/game/controller/field/contracts";
 
 
-type IResizeSubscribeArgument = {
-    domRect: DOMRect,
-    fieldRect: IRect
-}
-
-interface IResizeSubscriber {
-    (args: IResizeSubscribeArgument): void
-}
-
-export class GameField {
+export class Field {
     mainLayer: SVGSVGElement
     animationLayer: SVGSVGElement
 

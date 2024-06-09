@@ -1,13 +1,13 @@
-import {GameField} from "@/infra/game/controller/game-field/game-field";
-import {GameLogic} from "@/infra/game/controller/game-logic/gameLogic";
+import {Field} from "@/infra/game/controller/field/field";
+import {GameLogic} from "@/infra/game/controller/game-logic/game.logic";
 
 export class GameController {
-    gameField: GameField
+    gameField: Field
     gameLogic: GameLogic
 
 
     init(container: HTMLDivElement) {
-        this.gameField = new GameField(container)
+        this.gameField = new Field(container)
         this.gameLogic = new GameLogic(this.gameField)
     }
 
