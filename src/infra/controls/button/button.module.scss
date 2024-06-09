@@ -5,13 +5,13 @@ $font-size: var(--font-size-primary);
   font-size: $font-size;
   padding: 1rem;
   background: transparent;
-  border: 1px solid var(--secondary-color);
-  color: var(--secondary-color);
+  border: 1px solid var(--color-focused);
+  color: var(--color-focused);
   transition: 0.8s;
 
   &:hover {
-    color: var(--white);
-    background-color: var(--secondary-color);
+    color: var(--color-focused);
+    background-color: white;
   }
 
   &:disabled {
@@ -20,7 +20,7 @@ $font-size: var(--font-size-primary);
 
     &:hover {
       background: transparent;
-      color: var(--secondary-color);
+      color: var(--color-focused);
     }
   }
 }

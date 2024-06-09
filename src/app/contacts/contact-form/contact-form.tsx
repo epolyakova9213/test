@@ -8,15 +8,17 @@ import {IObjectValidators, Validator} from "@/app/contacts/validators/Validator"
 import {emailRegexp} from "@/constants";
 import {IMessageForm} from "@/app/contacts/contracts";
 import {FormController} from "@/app/contacts/validators/form-controller";
+import {Tip} from "@/infra/alert/tip";
 
 export const ContactForm: React.FC = () => {
 
+    const [submitMsg, setSubmitMsg] = useState('')
     const [controller] = useState(() => {
         const validator = new Validator<IMessageForm>({
-            email: '',
-            name: '',
+            email: 'email@mail.ru',
+            name: 'Name',
             subject: 'Hello',
-            message: '',
+            message: 'Msg',
         })
         const validators: IObjectValidators<IMessageForm> = {
             email: {
@@ -85,13 +87,27 @@ export const ContactForm: React.FC = () => {
                    name={'Message'}
             />
             {
-                controller.isTouched &&
+                // controller.isTouched &&
                 <Button text={controller.isTouched && controller.state.error || 'Send message'}
                         disabled={!!controller.state.error}
                         containerClassName={styles.submit}
-                        onClick={controller.clearState}
+                        onClick={() => {
+                            if (controller.state.error) return
+                            controller.clearState()
+                            setSubmitMsg('Success')
+                        }}
                 />
             }
+
+            {
+                submitMsg &&
+                <Tip>
+                    {
+                        submitMsg
+                    }
+                </Tip>
+            }
+
         </div>
     )
 }
