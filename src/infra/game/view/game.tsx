@@ -3,7 +3,10 @@
 import React, {useEffect, useRef, useState} from "react";
 import {GameController} from "@/infra/game/controller/game.controller";
 
-export const Game: React.FC = () => {
+/**
+ * use another key for rerender component
+ */
+export const Game: React.FC = React.memo(() => {
 
     const [controller] = useState(() => new GameController())
 
@@ -23,4 +26,4 @@ export const Game: React.FC = () => {
         </div>
 
     )
-}
+})

@@ -1,5 +1,7 @@
+/**
+ * Place the <image> with <pattern> tag to the given svg layer with given image/attributes
+ */
 export class ImagePatterns {
-
     addPattern(svg: SVGSVGElement, key: string, sizes: { width: number, height: number }) {
         const pattern = document.createElementNS("http://www.w3.org/2000/svg", 'pattern')
         svg.appendChild(pattern)

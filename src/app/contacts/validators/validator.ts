@@ -1,16 +1,12 @@
-export type IObjectType<T> = {
-    [property in keyof T]: string
-}
-export type IObjectValidators<T> = {
-    [Property in keyof T]: {
-        validators: Array<(value: keyof T, message?: string, args?: any) => string | undefined>
-    }
-}
+import {IObjectType, IObjectValidators} from "@/app/contacts/validators/contracts";
 
-export interface IValidator<T> {
-}
-
-export class Validator<T> implements IValidator<T> {
+/**
+ * Object that storing validators for any key of user object.
+ * Also default validators.
+ *
+ * Each validator is a function that returns a function closed on the arguments passed to the validator
+ */
+export class Validator<T> {
     constructor(private obj: IObjectType<T>, private validators?: IObjectValidators<T>) {
         this.obj = obj
         this.validators = validators

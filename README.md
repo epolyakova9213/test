@@ -44,10 +44,10 @@ Good afternoon. My name is Alexander. Here I will describe the implementation of
 4. Of all the possible approaches to implementing such a game, I chose SVG for the following reasons:
    - z-index control suitable for the given task;
    - DOM events;
-   - good speed.
+   - good enough speed.
    
    As a result of the implementation, I think that drawing on canvas would be more productive. Unfortunately, there was not enough time to implement it.
-5. When implementing the communication form, I used my own developments, which were written a year ago. They are suitable for implementation in a simple form, but overall they look dubious. I would rewrite it with pleasure, but the task has already been delayed.
+5. When implementing the communication form, I used my own developments, which were written a year ago. They are suitable for implementation in a simple form, but overall they look dubious. I would rewrite it with pleasure, but the task has already taken a long time.
 
 A more detailed analysis can be found in the comments.
 

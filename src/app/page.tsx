@@ -1,5 +1,9 @@
 import styles from './home.module.scss'
 
+/**
+ * Please, read README.md first
+ */
+
 export default function Home() {
     return (
         <div className={styles.container}>

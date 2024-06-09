@@ -1,3 +1,7 @@
+/**
+ * Multiple raf is worse than one raf.
+ * Here we manage functions for one next raf
+ */
 export class AnimationQueue {
     queue: Function[] = []
     id: number | undefined

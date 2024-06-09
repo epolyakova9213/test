@@ -4,14 +4,18 @@ import styles from "./contact-form.module.scss";
 import {Input} from "@/infra/controls/input/input";
 import {Button} from "@/infra/controls/button/button";
 import React, {useState} from "react";
-import {IObjectValidators, Validator} from "@/app/contacts/validators/Validator";
+import {Validator} from "@/app/contacts/validators/validator";
 import {emailRegexp} from "@/constants";
 import {IMessageForm} from "@/app/contacts/contracts";
 import {FormController} from "@/app/contacts/validators/form-controller";
 import {Tip} from "@/infra/alert/tip";
+import {IObjectValidators} from "@/app/contacts/validators/contracts";
 
 export const ContactForm: React.FC = () => {
 
+    /**
+     * simple value observing for form submit success message
+     */
     const [submitMsg, setSubmitMsg] = useState('')
     const [controller] = useState(() => {
         const validator = new Validator<IMessageForm>({
@@ -52,6 +56,10 @@ export const ContactForm: React.FC = () => {
 
         return new FormController<IMessageForm>(validator)
     })
+
+    /**
+     * observe form values changing
+     */
     controller.useHook()
 
 
@@ -101,6 +109,7 @@ export const ContactForm: React.FC = () => {
             {
                 submitMsg &&
                 <Tip onAnimationEnd={() => {
+                    // Delete text when it goes off screen
                     setSubmitMsg(null)
                 }}>
                     {

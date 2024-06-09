@@ -3,7 +3,11 @@ import {IPoint, Point} from "@/infra/game/controller/math/point";
 import {IRect} from "@/infra/game/controller/math/rect";
 import {GameLogic} from "@/infra/game/controller/game-logic/game.logic";
 
+/**
+ * Rect with some game logic
+ */
 export class GameRect extends SvgRect {
+    // rect should not be created without spawning
     isSpawning = true
 
     constructor(
@@ -14,6 +18,9 @@ export class GameRect extends SvgRect {
         super(spaceProps);
     }
 
+    /**
+     * Align spawn center like our current center in the super class
+     */
     adjust(fieldSizes: IRect) {
         if (this.isSpawning) {
             this.spawnCenter[0] = Math.min(this.spawnCenter[0], fieldSizes.right - this.spaceProps.width / 2)
@@ -27,8 +34,10 @@ export class GameRect extends SvgRect {
     spawn = () => {
         this.goto()
 
-        let cycles = 60 // 60 frames
-        const delta = Point.scale(Point.diff(this.spawnCenter, this.spaceProps.center), cycles ** -1)
+        // animation duration - 60 frames (1 second)
+        let cycles = 60
+        // 60 increments for every coordinate
+        const delta = Point.scale(Point.sub(this.spawnCenter, this.spaceProps.center), cycles ** -1)
         const nextStep = () => {
             this.goto(Point.min(Point.sum(this.spaceProps.center, delta), this.spawnCenter))
 
