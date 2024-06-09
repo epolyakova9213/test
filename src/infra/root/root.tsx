@@ -1,4 +1,4 @@
-import styles from './root.module.css'
+import styles from './root.module.scss'
 import {Header} from "@/infra/header/header";
 import {Footer} from "@/infra/footer/footer";
 import React from "react";

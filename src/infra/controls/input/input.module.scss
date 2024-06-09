@@ -1,9 +1,11 @@
+@import 'src/infra/styles/templates.module';
+
+$font-size: 16px;
+
 .fieldContainer {
+  @extend %flex;
   position: relative;
-  display: flex;
-  justify-content: center;
   flex-direction: column;
-  align-items: center;
   width: 100%;
 }
 
@@ -21,8 +23,8 @@
   background: white;
   top: 15px;
   left: 17px;
-  font-size: 16px;
-  color: #626161;
+  font-size: $font-size;
+  color: var(--color-dark);
   transition: 0.5s ease;
 }
 
@@ -41,32 +43,32 @@
   transition: all 0.5s;
   padding: 0.9em 1em;
   box-shadow: none !important;
-  font-size: 1em;
+  font-size: $font-size;
 }
 
 .field:focus + .underField {
-  background-color: #f07f81;
+  background-color: var(--color-focused);
   width: 100%;
 }
 
 .field:focus + .underField + .text {
-  color: #f07f81;
+  color: var(--color-focused);
   position: absolute;
-  top: -8px;
-  left: 8px;
+  top: calc($font-size / -2);
+  left: calc($font-size / 2);
   padding: 0 5px;
 }
 
 .focusedDiv {
-  background-color: #f07f81;
+  background-color: var(--color-focused);
   width: 100%;
 }
 
 .focusedText {
-  color: #f07f81;
+  color: var(--color-focused);
   position: absolute;
-  top: -8px;
-  left: 8px;
+  top: calc($font-size / -2);
+  left: calc($font-size / 2);
   padding: 0 5px;
 }
 
@@ -82,6 +84,6 @@
 }
 
 .textarea::-webkit-scrollbar-thumb {
-  background-color: #f07f81;
+  background-color: var(--color-focused);
   border-radius: 3px;
 }

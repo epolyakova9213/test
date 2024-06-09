@@ -1,9 +1,9 @@
+@import 'src/infra/styles/templates.module';
+
 .footer {
-  background: black;
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  color: white;
+  background: var(--color-bg-primary);
+  color: var(--color-light);
+  @extend %flex;
   flex-direction: column;
   row-gap: 10px;
 
@@ -17,11 +17,11 @@
   }
 
   .icons {
-    display: flex;
+    @extend %flex;
     column-gap: 5px;
 
     a {
-      color: white;
+      color: var(--color-light);
 
       * {
         border: 2px solid white;

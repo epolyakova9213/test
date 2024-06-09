@@ -9,3 +9,12 @@ html, body {
   min-height: 100vh;
   font-size: 25px;
 }
+
+:root {
+  --color-light: white;
+  --color-dark: #626161;
+  --color-focused:  #f07f81;
+  --color-bg-primary: black;
+  --font-size-primary: 16px;
+  --font-size-secondary: 25px;
+}

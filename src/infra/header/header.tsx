@@ -1,5 +1,5 @@
 import React from "react";
-import styles from './header.module.css'
+import styles from './header.module.scss'
 import {Navigation} from "@/infra/navigation/navigation";
 import bg from '../../../public/next.svg'
 

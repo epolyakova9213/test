@@ -1,13 +1,14 @@
+@import '../../infra/styles/templates.module';
+
 .header {
-  background: black;
-  display: flex;
-  align-items: flex-end;
   position: relative;
+  background: var(--color-bg-primary);
+  @extend %flex;
+  align-items: flex-end;
 }
 
 .bg {
-  position: absolute;
-  inset: 0px;
+  @extend %within-parent;
   filter: blur(20px) invert(1);
   background-repeat: no-repeat;
   background-position: center;
