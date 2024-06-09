@@ -15,7 +15,8 @@ export class GameRect {
     path: SVGPathElement
     isDragging: undefined | {
         dragStart: IPoint,
-        mousePosition: IPoint | undefined
+        newCenterPosition: IPoint | undefined,
+        innerOffset: IPoint,
     } = undefined
 
     subscribers: Record<ISubscribeEventType, ((rect: GameRect) => void)[]> = {
@@ -83,9 +84,16 @@ export class GameRect {
         const domRect = (this.parentLayer as SVGSVGElement)?.getBoundingClientRect()
         if (!domRect) return
 
+        const selfDomRect = this.g.getBoundingClientRect()
+        let innerOffset = [event.offsetX, event.offsetY]
+        innerOffset = Point.diff(innerOffset, this.spaceProps.center)
+
+        console.log(innerOffset)
+
         this.isDragging = {
-            dragStart: Point.diff([event.clientX, event.clientY], [domRect.left, domRect.top]),
-            mousePosition: Point.diff([event.clientX, event.clientY], [domRect.left, domRect.top])
+            dragStart: [event.offsetX, event.offsetY],
+            newCenterPosition: this.spaceProps.center,
+            innerOffset,
         }
         document.addEventListener('mouseup', this.onMouseUp)
         document.addEventListener('mousemove', this.onMouseMove)
@@ -108,18 +116,18 @@ export class GameRect {
         const fieldRect = Rect.fromSizesAndCenter(domRect.width, domRect.height)
 
         requestAnimationFrame(() => {
-                if (this.isDragging?.mousePosition) {
-                    this.spaceProps.center = this.isDragging.mousePosition
+                if (this.isDragging?.newCenterPosition) {
+                    this.spaceProps.center = Point.diff(this.isDragging.newCenterPosition, this.isDragging.innerOffset!)
                     if (!Rect.isIn(this.rect, fieldRect)) {
                         this.adjust(fieldRect)
                     }
                     this.goto()
-                    this.isDragging!.mousePosition = undefined
+                    this.isDragging!.newCenterPosition = undefined
                 }
             }
         )
 
-        this.isDragging.mousePosition = Point.diff([event.clientX, event.clientY], [domRect.left, domRect.top])
+        this.isDragging.newCenterPosition = Point.diff([event.clientX, event.clientY], [domRect.left, domRect.top])
     }
 
     dispose() {

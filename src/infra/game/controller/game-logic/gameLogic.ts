@@ -6,8 +6,8 @@ import {IPoint, Point} from "@/infra/game/controller/math/point";
 import {ImagePatterns} from "@/infra/game/controller/image-patterns/image-patterns";
 
 export class GameLogic {
-    width = 20
-    height = 20
+    width = 50
+    height = 50
     imagePatterns = new ImagePatterns()
     animationQueue = new AnimationQueue()
     gameRects: Map<GameRect, {
@@ -38,7 +38,7 @@ export class GameLogic {
         }
 
         setTimeout(() => {
-            this.generateRandomObjects(200)
+            this.generateRandomObjects(10)
         }, 2000)
     }
 

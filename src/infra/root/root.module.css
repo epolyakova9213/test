@@ -5,5 +5,5 @@
   left: 0;
   right: 0;
   display: grid;
-  grid-template-rows: 15% 1fr 15%;
+  grid-template-rows: 150px 1fr 150px;
 }
