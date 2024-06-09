@@ -1,6 +1,7 @@
 import {Matrix} from "@/infra/game/controller/math/matrix";
 import {IRect, Rect} from "@/infra/game/controller/math/rect";
 import {IPoint, Point} from "@/infra/game/controller/math/point";
+import styles from './svg-rect.module.scss'
 
 export type ISpaceProps = {
     center: IPoint,
@@ -23,7 +24,7 @@ export class SvgRect {
 
     init() {
         this.g = document.createElementNS("http://www.w3.org/2000/svg", 'g')
-        this.g.classList.add('rect')
+        this.g.classList.add(styles.rect)
         this.g.addEventListener('mousedown', this.onMouseDownBound)
 
         this.path = document.createElementNS("http://www.w3.org/2000/svg", 'path')
@@ -84,12 +85,14 @@ export class SvgRect {
         document.addEventListener('mouseup', this.onMouseUpBound)
         document.addEventListener('mousemove', this.onMouseMoveBound)
     }
+
     onMouseDownBound = this.onMouseDown.bind(this)
 
     onMouseUp() {
         document.removeEventListener('mouseup', this.onMouseUpBound)
         document.removeEventListener('mousemove', this.onMouseMoveBound)
     }
+
     onMouseUpBound = this.onMouseUp.bind(this)
 
     onMouseMove(event: MouseEvent) {
@@ -115,6 +118,7 @@ export class SvgRect {
 
         this.isDragging.newCenterPosition = Point.diff([event.clientX, event.clientY], [domRect.left, domRect.top])
     }
+
     onMouseMoveBound = this.onMouseMove.bind(this)
 
     dispose() {
